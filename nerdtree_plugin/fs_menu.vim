@@ -22,6 +22,7 @@ endif
 call NERDTreeAddMenuItem({'text': '(a)dd a childnode', 'shortcut': 'a', 'callback': 'NERDTreeAddNode'})
 call NERDTreeAddMenuItem({'text': '(m)ove the current node', 'shortcut': 'm', 'callback': 'NERDTreeMoveNode'})
 call NERDTreeAddMenuItem({'text': '(d)elete the current node', 'shortcut': 'd', 'callback': 'NERDTreeDeleteNode'})
+call NERDTreeAddMenuItem({'text': '(s)earch the current node', 'shortcut': 's', 'callback': 'NERDTreeSearchNode'})
 
 if has("gui_mac") || has("gui_macvim") || has("mac")
     call NERDTreeAddMenuItem({'text': '(r)eveal in Finder the current node', 'shortcut': 'r', 'callback': 'NERDTreeRevealInFinder'})
@@ -259,6 +260,22 @@ function! NERDTreeCopyNode()
         call nerdtree#echo("Copy aborted.")
     endif
     redraw
+endfunction
+
+" FUNCTION: NERDTreeSearchNode() {{{1
+function! NERDTreeSearchNode()
+    let currentNode = g:NERDTreeFileNode.GetSelected()
+    let searchContent = input("Search word in current node\n" .
+                            \ "==========================================================\n" .
+                            \ "Enter the string you want to search\n" .
+                            \ "(in path:" . currentNode.path.str() . "):")
+    
+    let hasAg = system("which ag")
+    if hasAg == ""
+        exec "vimgrep " . searchContent . " -R " . currentNode.path.str() . "/*"
+    else
+        exec "Ag! " . searchContent . " " . currentNode.path.str()
+    endif
 endfunction
 
 " FUNCTION: NERDTreeQuickLook() {{{1
