@@ -39,6 +39,8 @@ function! nerdtree#ui_glue#createDefaultBindings()
 
     call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapCWD, 'scope': "all", 'callback': "nerdtree#ui_glue#chRootCwd" })
 
+    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapExec, 'scope': "all", 'callback': "nerdtree#ui_glue#execFile" })
+
     call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapRefreshRoot, 'scope': "all", 'callback': s."refreshRoot" })
     call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapRefresh, 'scope': "Node", 'callback': s."refreshCurrent" })
 
@@ -69,6 +71,7 @@ function! nerdtree#ui_glue#createDefaultBindings()
     call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapOpenExpl, 'scope': "DirNode", 'callback': s."openExplorer" })
 
     call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapDeleteBookmark, 'scope': "Bookmark", 'callback': s."deleteBookmark" })
+
 endfunction
 
 
@@ -139,6 +142,18 @@ endfunction
 " changes the current root to the selected one
 function! s:chRoot(node)
     call b:NERDTree.changeRoot(a:node)
+endfunction
+
+" FUNCTION: s:nerdtree#ui_glue#execFile() {{{1
+" changes the current root to CWD
+function! nerdtree#ui_glue#execFile()
+    try
+        let file = g:NERDTreeFileNode.GetSelected()
+        exec "source " . file.path.str()
+    catch /^NERDTree.InvalidArgumentsError/
+        call nerdtree#echo("current file can't be executed.")
+        return
+    endtry
 endfunction
 
 " FUNCTION: s:nerdtree#ui_glue#chRootCwd() {{{1
