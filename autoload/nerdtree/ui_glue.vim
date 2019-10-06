@@ -149,7 +149,7 @@ endfunction
 function! nerdtree#ui_glue#execFile()
     try
         let file = g:NERDTreeFileNode.GetSelected()
-        exec "source " . file.path.str()
+        exec "!source " . file.path.str()
     catch /^NERDTree.InvalidArgumentsError/
         call nerdtree#echo("current file can't be executed.")
         return
